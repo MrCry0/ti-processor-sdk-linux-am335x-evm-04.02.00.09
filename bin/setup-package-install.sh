@@ -58,12 +58,12 @@ entry_header
 
 packages_to_install="xinetd tftpd nfs-kernel-server minicom build-essential libncurses5-dev autoconf automake dos2unix screen lrzsz"
 
-get_host_type host
+get_major_host_version hostmajor
 
 # Starting with Ubuntu 14.04 the package name for uboot-mkimage has changed
 # to u-boot-tools
 
-if [ "$host" = "trusty" ]; then
+if [ $hostmajor -ge 14 ]; then
     packages_to_install="$packages_to_install u-boot-tools"
 else
     packages_to_install="$packages_to_install uboot-mkimage"
