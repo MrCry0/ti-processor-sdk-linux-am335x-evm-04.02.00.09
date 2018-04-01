@@ -140,15 +140,11 @@ echo "Note! This command requires you to have administrator priviliges (sudo acc
 echo "on your host."
 read -p "Press return to continue" REPLY
 
-grep $dst /etc/exports > /dev/null
-if [ "$?" -eq "0" ]; then
+[ -f /etc/exports ] || touch /etc/exports
+if grep -q $dst /etc/exports >/dev/null 2>&1; then
     echo "$dst already NFS exported, skipping.."
 else
-    sudo chmod 666 /etc/exports
-    check_status
-    sudo echo "$dst *(rw,nohide,insecure,no_subtree_check,async,no_root_squash)" >> /etc/exports
-    check_status
-    sudo chmod 644 /etc/exports
+    sudo sh -c "echo \"$dst *(rw,nohide,insecure,no_subtree_check,async,no_root_squash)\" >> /etc/exports"
     check_status
 fi
 
