@@ -73,12 +73,9 @@ fi
 cmd="sudo apt-get install "
 
 # Check and only install the missing packages
-for i in $packages_to_install; do
-	is_it_installed=`dpkg-query -l $i 2>/dev/null`
-	if [ "$?" -ne "0" ]; then
-		needs_installation=`echo $needs_installation`" "$i
-		new_cmd=`echo $cmd`" "$i
-		cmd=$new_cmd
+for pkg in $packages_to_install; do
+	if ! dpkg-query -s $pkg >/dev/null 2>&1; then
+		needs_installation=$needs_installation" "$pkg
 	fi
 done
 
@@ -104,6 +101,7 @@ else
         exit 1
     fi
 
+    cmd=$cmd$needs_installation
     echo "Performing $cmd"
     $cmd
     check_status
